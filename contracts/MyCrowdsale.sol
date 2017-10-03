@@ -141,13 +141,6 @@ contract MyToken is ERC20Interface, Owned {
     uint8 public constant decimals = 18;
     uint public totalSupply = 0;
 
-    uint public constant DECIMALSFACTOR = 10**uint(decimals);
-
-    // ------------------------------------------------------------------------
-    // Administrators can mint until sealed
-    // ------------------------------------------------------------------------
-    // bool public sealed;
-
     // ------------------------------------------------------------------------
     // Balances for each account
     // ------------------------------------------------------------------------
