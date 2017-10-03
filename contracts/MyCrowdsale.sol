@@ -3,7 +3,7 @@ pragma solidity ^0.4.16;
 // ----------------------------------------------------------------------------
 // MYT 'MyToken' crowdsale/token contract sample contract.
 //
-// NOTE: Use at your own risk
+// NOTE: Use at your own risk as this contract has not been audited
 //
 // Deployed to : 
 // Symbol      : MYT
@@ -19,7 +19,7 @@ pragma solidity ^0.4.16;
 
 // ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
-// https://github.com/ethereum/EIPs/issues/20
+// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
 contract ERC20Interface {
     uint public totalSupply;
@@ -260,15 +260,22 @@ contract MyCrowdsale is MyToken {
     uint public constant START_DATE = 1506978000;
     uint public constant END_DATE = START_DATE + 2 weeks;
 
-    uint public constant ETH_HARD_CAP = 1 ether;
+    // Hard cap
+    uint public constant ETH_HARD_CAP = 5 ether;
 
+    // Tokens per 1,000 ETH
     uint public constant tokensPerKEther = 1000000; 
 
+    // Keep track of ETH raised
     uint public ethersRaised;
 
+    // Crowdsale finalised?
     bool public finalised;
+
+    // Tokens transferable?
     bool public transferable;
 
+    // My coffer
     address public wallet; 
 
 
@@ -285,17 +292,27 @@ contract MyCrowdsale is MyToken {
     // crowdsale commences
     // ------------------------------------------------------------------------
     function addPrecommitment(address participant, uint tokens, uint ethers) public onlyOwner {
+        // Can only add precommitments before the crowdsale starts
         require(block.timestamp < START_DATE);
+
+        // Check tokens > 0
         require(tokens > 0);
+
+        // Mint tokens
         mint(participant, tokens);
+
+        // Keep track of ethers raised
         ethersRaised = ethersRaised.add(ethers);
+
+        // Log event
         PrecommitmentAdded(participant, tokens, ethers);
     }
     event PrecommitmentAdded(address indexed participant, uint tokens, uint ethers);
 
 
     // ------------------------------------------------------------------------
-    // Fallback function to receive ETH contributions
+    // Fallback function to receive ETH contributions send directly to the
+    // contract address
     // ------------------------------------------------------------------------
     function() public payable {
         proxyPayment(msg.sender);
@@ -303,20 +320,36 @@ contract MyCrowdsale is MyToken {
 
 
     // ------------------------------------------------------------------------
-    // Receive ETH contributions
+    // Receive ETH contributions. Can use this to send tokens to another
+    // account
     // ------------------------------------------------------------------------
     function proxyPayment(address contributor) public payable {
+        // Check we are still in the crowdsale period
         require(block.timestamp >= START_DATE && block.timestamp <= END_DATE);
+
+        // Check for invalid address
         require(contributor != 0x0);
+
+        // Check that contributor has sent ETH
         require(msg.value > 0);
 
+        // Keep track of ETH raised
         ethersRaised = ethersRaised.add(msg.value);
+
+        // Check we have not exceeded the hard cap
         require(ethersRaised <= ETH_HARD_CAP);
 
+        // Calculate tokens for contributed ETH
         uint tokens = msg.value.mul(tokensPerKEther).div(1000);
 
+        // Mint tokens for contributor
         mint(contributor, tokens);
+
+        // Log ETH contributed and tokens generated
         TokensBought(contributor, msg.value, tokens);
+
+        // Transfer ETH to coffer 
+        wallet.transfer(msg.value);
     }
     event TokensBought(address indexed contributor, uint ethers, uint tokens);
 
@@ -325,10 +358,19 @@ contract MyCrowdsale is MyToken {
     // Finalise crowdsale, 20% of tokens for myself
     // ------------------------------------------------------------------------
     function finalise() public onlyOwner {
+        // Can only finalise once
         require(!finalised);
+
+        // Can only finalise if we are past end date, or hard cap reached
         require(block.timestamp > END_DATE || ethersRaised == ETH_HARD_CAP);
+
+        // Mark as finalised 
         finalised = true;
+
+        // Allow tokens to be transferable
         transferable = true;
+
+        // Mint tokens for my coffer, being 20% of crowdsold tokens
         uint myTokens = totalSupply.mul(20).div(80);
         mint(owner, myTokens);
     }
@@ -338,6 +380,7 @@ contract MyCrowdsale is MyToken {
     // transfer tokens, only transferable after the crowdsale is finalised
     // ------------------------------------------------------------------------
     function transfer(address to, uint tokens) public returns (bool success) {
+        // Can only transfer after crowdsale completed
         require(transferable);
         return super.transfer(to, tokens);
     }
@@ -349,6 +392,7 @@ contract MyCrowdsale is MyToken {
     function transferFrom(address from, address to, uint tokens) public
         returns (bool success)
     {
+        // Can only transfer after crowdsale completed
         require(transferable);
         return super.transferFrom(from, to, tokens);
     }
