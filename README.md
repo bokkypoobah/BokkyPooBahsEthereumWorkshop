@@ -1,6 +1,17 @@
-See the [wiki](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki) for further details.
+[BokkyPooBah's Ethereum Workshop](https://www.meetup.com/BokkyPooBahs-Ethereum-Workshop/) notes and exercises can be found in the [wiki](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki) with the main items following:
 
-Collaborators:
+* [Lurve Voting](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki/Lurve-Voting)
+* [MyCrowdsale](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki/MyCrowdsale)
+* [Workshop #20 Contracts To Check msg.sender](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki/Workshop-%2320-Contracts-To-Check-msg.sender)
+* [Workshop #31 [Introduction] Blockchains & Crypto Safety, And Smart Contracts #1](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki/Workshop-%2331-%5BIntroduction%5D-Blockchains-&-Crypto-Safety,-And-Smart-Contracts-%231)
+* [Workshop #44 Building the BokChain.io EVM PoA Bridged Sidechain Testnet](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki/Workshop-%2344-Building-the-BokChain.io-EVM-PoA-Bridged-Sidechain-Testnet)
+* [Workshop #50 Back To The Basics](https://github.com/bokkypoobah/BokkyPooBahsEthereumWorkshop/wiki/Workshop-%2350-Back-To-The-Basics)
+
+<br />
+
+<hr />
+
+## Collaborators
 
 * [Andrew](https://github.com/andrewrd)
 * [Antoine Najjarin](https://github.com/antjj)
